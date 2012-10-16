@@ -1,0 +1,24 @@
+---
+abstract: unknown
+author:
+  - 'daichi hiroki <daichi.hiroki@mixi.co.jp>'
+build_requires:
+  ExtUtils::MakeMaker: 6.36
+configure_requires:
+  ExtUtils::MakeMaker: 6.36
+dynamic_config: 0
+generated_by: 'Module::Install version 1.06, CPAN::Meta::Converter version 2.112150'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: DBIx-AssertIndex
+no_index:
+  directory:
+    - inc
+    - t
+    - xt
+requires: {}
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.01
