@@ -2,10 +2,9 @@ package DBIx::AssertIndex;
 
 use strict;
 use warnings;
+use 5.008_009;
+
 our $VERSION = '0.01';
-
-use Data::Util;
-
 
 use DBI;
 

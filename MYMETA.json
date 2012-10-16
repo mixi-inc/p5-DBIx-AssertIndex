@@ -23,16 +23,20 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.36"
+            "ExtUtils::MakeMaker" : "6.59"
          }
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.36"
+            "ExtUtils::MakeMaker" : "6.59"
          }
       },
       "runtime" : {
-         "requires" : {}
+         "requires" : {
+            "DBD::mysql" : 0,
+            "DBI" : 0,
+            "perl" : "5.008009"
+         }
       }
    },
    "release_status" : "stable",
