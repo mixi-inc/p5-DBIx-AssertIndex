@@ -14,43 +14,48 @@ sub import {
     my ($class) = @_;
 
     no warnings qw(redefine prototype);
-    my $original_do      = \&DBI::db::do;
-    my $original_execute = \&DBI::st::execute;
-    *DBI::db::do      = __explain_and_do($original_do, $original_execute);
-    *DBI::st::execute = __explain_and_execute($original_execute);
+    my $original_st_execute = \&DBI::st::execute;
+    *DBI::st::execute            = __explain_and_st_execute($original_st_execute);
+
+    foreach my $db_method (qw/do selectall_arrayref selectrow_array selectrow_arrayref /){
+        no strict qw(refs);
+        my $original = \&{"DBI::db::$db_method"};
+        *{"DBI::db::$db_method"} = __explain_and_db_XXX($original, $original_st_execute);
+    }
 };
 
-sub __explain_and_do {
-    my($original_do, $original_execute) = @_;
+sub __explain_and_db_XXX {
+    my($original_db_XXX, $original_st_execute) = @_;
+
     return sub {
         my ($dbh, $statement, @rest ) = @_;
 
-        __expain($original_execute, $dbh, $statement, @rest);
-        return $original_do->(@_);
+        __expain($original_st_execute, $dbh, $statement, @rest);
+        return $original_db_XXX->(@_);
     };
 }
 
-sub __explain_and_execute {
-    my $original_execute = shift;
+sub __explain_and_st_execute {
+    my $original_st_execute = shift;
     return sub {
         my ($sth, @rest ) = @_;
 
         my $dbh       = $sth->{Database};
         my $statement = $sth->{Statement};
-        __expain($original_execute, $dbh, $statement, @rest);
-        return $original_execute->(@_);
+        __expain($original_st_execute, $dbh, $statement, @rest);
+        return $original_st_execute->(@_);
     };
 }
 
 sub __expain {
-    my($original_execute, $dbh, $statement, @rest) = @_;
+    my($original_st_execute, $dbh, $statement, @rest) = @_;
 
     return unless($dbh->{Driver}{Name} eq 'mysql');
     return unless $statement =~ m/^\s*SELECT/i;
     return unless $statement =~ m/FROM/mi;
 
     my $explain_sth = $dbh->prepare( 'explain ' . $statement );
-    $original_execute->($explain_sth, @rest);
+    $original_st_execute->($explain_sth, @rest);
     __assert_explain($explain_sth->fetchall_arrayref( +{} ), $statement);
 }
 
@@ -102,15 +107,22 @@ __END__
 
 =head1 NAME
 
-DBIx::AssertIndex -
+DBIx::AssertIndex - show error when SQL query doesn't use index.
 
 =head1 SYNOPSIS
 
   use DBIx::AssertIndex;
+  my $row = $dbh->selectrow_hashref(q{SELECT * FROM some_table WHERE no_indexed_column = 'foo'});
+
+  or
+
+  > starman -MDBIx::AssertIndex app.psgi
 
 =head1 DESCRIPTION
 
-DBIx::AssertIndex is
+DBIx::AssertIndex is run explain with SELECT SQL and detect query without any index.
+
+Works only DBD::mysql.
 
 =head1 AUTHOR
 

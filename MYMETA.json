@@ -1,10 +1,10 @@
 {
-   "abstract" : "unknown",
+   "abstract" : "show error when SQL query doesn't use index.",
    "author" : [
       "daichi hiroki <daichi.hiroki@mixi.co.jp>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Module::Install version 1.06, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112150",
    "license" : [
       "perl_5"
    ],
@@ -15,9 +15,8 @@
    "name" : "DBIx-AssertIndex",
    "no_index" : {
       "directory" : [
-         "inc",
          "t",
-         "xt"
+         "inc"
       ]
    },
    "prereqs" : {
@@ -28,7 +27,7 @@
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.59"
+            "ExtUtils::MakeMaker" : 0
          }
       },
       "runtime" : {
@@ -40,10 +39,5 @@
       }
    },
    "release_status" : "stable",
-   "resources" : {
-      "license" : [
-         "http://dev.perl.org/licenses/"
-      ]
-   },
    "version" : "0.01"
 }
